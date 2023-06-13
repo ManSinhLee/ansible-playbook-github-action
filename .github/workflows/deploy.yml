@@ -22,6 +22,9 @@ jobs:
       # - name: Configure SSH agent
       #   run: eval $(ssh-agent) && ssh-add ~/.ssh/id_rsa
 
+      - name: test DNS 
+        run: nslookup 4225a859242c.mylabserver.com
+
       - name: Install Dependencies
         run: pip install ansible
 
