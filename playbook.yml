@@ -1,7 +1,9 @@
 ---
 - name: Install NGINX on Red Hat
-  hosts: worker
+  hosts: ['4225a859242c.mylabserver.com','4225a859243c.mylabserver.com','4225a859244c.mylabserver.com']
   become: true
+  vars:
+    ansible_user: man-sinh-lee
   tasks:
     - name: Update package cache
       package:
