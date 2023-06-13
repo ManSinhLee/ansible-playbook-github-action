@@ -1,35 +1,55 @@
-name: Deploy Playbook
+# name: Deploy Playbook
 
-on:
-  push:
-    branches:
-      - main
+# on:
+#   push:
+#     branches:
+#       - main
 
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
+# jobs:
+#   deploy:
+#     runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
+#     steps:
+#       - name: Checkout Repository
+#         uses: actions/checkout@v2
 
-      - name: create .ssh diretory
-        run: mkdir -p /home/runner/.ssh
+#       - name: create .ssh diretory
+#         run: mkdir -p /home/runner/.ssh
 
-      - name: Set up SSH key
-        run: echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa
+#       - name: Set up SSH key
+#         run: echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa
       
-      - name: disable SSH verification
-        run: echo 'Host *' >> ~/.ssh/config && echo '    StrictHostKeyChecking no' >> ~/.ssh/config
+#       - name: disable SSH verification
+#         run: echo 'Host *' >> ~/.ssh/config && echo '    StrictHostKeyChecking no' >> ~/.ssh/config
 
-      # - name: Configure SSH agent
-      #   run: eval $(ssh-agent) && ssh-add ~/.ssh/id_rsa
+#       # - name: Configure SSH agent
+#       #   run: eval $(ssh-agent) && ssh-add ~/.ssh/id_rsa
 
-      - name: test DNS 
-        run: nslookup 4225a859242c.mylabserver.com
+#       - name: test DNS 
+#         run: nslookup 4225a859242c.mylabserver.com
 
-      - name: Install Dependencies
-        run: pip install ansible
+#       - name: Install Dependencies
+#         run: pip install ansible
 
-      - name: Deploy Playbook
-        run: ansible-playbook -i inventory.ini playbook.yml
+#       - name: Deploy Playbook
+#         run: ansible-playbook -i inventory.ini playbook.yml
+
+
+name: Deploy
+on:
+  # Triggers this Action on push or pull request events on the "main" branch and when manually requested from the "Actions" tab
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+ 
+jobs:
+  deploy_code:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run Ansible playbook
+        uses: dawidd6/action-ansible-playbook@v2.5.0
+        with:
+          playbook: playbook.yml # path to your Ansible playbook
+          directory: ./
+          key: ${{ secrets.SSH_PRIVATE_KEY }} # the ssh private key for ansible to use to connect to the servers, stored as "ansible_ssh_private_key" in the GitHub secrets
+          inventory: ${{ secrets.ANSIBLE_INVENTORY }} # the ansible inventory to use, stored as "ansible_inventory" in the GitHub secrets
