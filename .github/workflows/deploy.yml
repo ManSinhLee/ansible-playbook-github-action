@@ -18,6 +18,9 @@ jobs:
 
       - name: Set up SSH key
         run: echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa
+      
+      - name: disable SSH verification
+        run: echo 'Host *' >> ~/.ssh/config && echo '    StrictHostKeyChecking no' >> ~/.ssh/config
 
       # - name: Configure SSH agent
       #   run: eval $(ssh-agent) && ssh-add ~/.ssh/id_rsa
