@@ -1,0 +1,26 @@
+name: Deploy Playbook
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Set up SSH key
+        run: echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa
+
+      - name: Configure SSH agent
+        run: eval $(ssh-agent) && ssh-add ~/.ssh/id_rsa
+
+      - name: Install Dependencies
+        run: pip install ansible
+
+      - name: Deploy Playbook
+        run: ansible-playbook -i inventory.ini playbook.yml
