@@ -1,0 +1,20 @@
+---
+- name: Install NGINX on Red Hat
+  hosts: worker
+  become: true
+  tasks:
+    - name: Update package cache
+      package:
+        name: epel-release
+        state: present
+
+    - name: Install NGINX
+      package:
+        name: nginx
+        state: present
+
+    - name: Start NGINX service
+      service:
+        name: nginx
+        state: started
+        enabled: yes
